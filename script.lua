@@ -1,4 +1,4 @@
--- ============ WINDUI LIBRARY ============
+-- ============ MODERN WINDUI LIBRARY ============
 local windUI = {}
 windUI.__index = windUI
 
@@ -6,10 +6,10 @@ function windUI.new(title, size, position)
     local self = setmetatable({}, windUI)
     
     self.title = title or "windUI"
-    self.size = size or UDim2.new(0, 550, 0, 400)
-    self.position = position or UDim2.new(0.2, 0, 0.2, 0)
-    self.minSize = UDim2.new(0, 450, 0, 300)
-    self.maxSize = UDim2.new(0, 1000, 0, 800)
+    self.size = size or UDim2.new(0, 650, 0, 500)
+    self.position = position or UDim2.new(0.15, 0, 0.15, 0)
+    self.minSize = UDim2.new(0, 550, 0, 400)
+    self.maxSize = UDim2.new(0, 1200, 0, 900)
     self.isDragging = false
     self.isResizing = false
     self.dragStart = nil
@@ -27,117 +27,175 @@ function windUI:_createWindow()
     self.screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     self.screenGui.ResetOnSpawn = false
     
-    -- Main Window Frame
+    -- Main Window Frame with gradient backdrop
     self.window = Instance.new("Frame", self.screenGui)
     self.window.Name = "MainWindow"
     self.window.Size = self.size
     self.window.Position = self.position
-    self.window.BackgroundColor3 = Color3.fromRGB(19, 19, 21)
+    self.window.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
     self.window.BorderSizePixel = 0
     self.window.ClipsDescendants = true
     
+    -- Gradient effect
+    local gradient = Instance.new("UIGradient", self.window)
+    gradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(20, 20, 28)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 15, 20))
+    })
+    gradient.Rotation = 45
+    
     -- Corner
     local corner = Instance.new("UICorner", self.window)
-    corner.CornerRadius = UDim.new(0, 10)
+    corner.CornerRadius = UDim.new(0, 12)
     
-    -- Stroke
+    -- Stroke - Modern glow effect
     local stroke = Instance.new("UIStroke", self.window)
-    stroke.Color = Color3.fromRGB(51, 51, 57)
-    stroke.Thickness = 1
+    stroke.Color = Color3.fromRGB(100, 200, 255)
+    stroke.Thickness = 1.5
+    stroke.Transparency = 0.5
     
-    -- Title Bar
+    -- Shadow effect (fake)
+    local shadowFrame = Instance.new("Frame", self.screenGui)
+    shadowFrame.Name = "Shadow"
+    shadowFrame.Size = self.size + UDim2.new(0, 20, 0, 20)
+    shadowFrame.Position = self.window.Position + UDim2.new(0, 10, 0, 10)
+    shadowFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    shadowFrame.BorderSizePixel = 0
+    shadowFrame.BackgroundTransparency = 0.7
+    shadowFrame.ZIndex = -1
+    
+    local shadowCorner = Instance.new("UICorner", shadowFrame)
+    shadowCorner.CornerRadius = UDim.new(0, 12)
+    
+    local shadowBlur = Instance.new("UIBlur")
+    shadowBlur.Size = UDim.new(0, 20)
+    shadowBlur.Parent = shadowFrame
+    
+    -- Title Bar - Sleek Design
     self.titleBar = Instance.new("Frame", self.window)
     self.titleBar.Name = "TitleBar"
-    self.titleBar.Size = UDim2.new(1, 0, 0, 42)
-    self.titleBar.BackgroundColor3 = Color3.fromRGB(27, 27, 31)
+    self.titleBar.Size = UDim2.new(1, 0, 0, 50)
+    self.titleBar.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
     self.titleBar.BorderSizePixel = 0
     
-    local titleCorner = Instance.new("UICorner", self.titleBar)
-    titleCorner.CornerRadius = UDim.new(0, 10)
+    local titleGradient = Instance.new("UIGradient", self.titleBar)
+    titleGradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 25, 35)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(20, 20, 28))
+    })
     
-    -- Title Text
+    local titleCorner = Instance.new("UICorner", self.titleBar)
+    titleCorner.CornerRadius = UDim.new(0, 12)
+    
+    -- Title Text with glow
     self.titleLabel = Instance.new("TextLabel", self.titleBar)
     self.titleLabel.Size = UDim2.new(1, -100, 1, 0)
-    self.titleLabel.Position = UDim2.new(0, 12, 0, 0)
+    self.titleLabel.Position = UDim2.new(0, 20, 0, 0)
     self.titleLabel.BackgroundTransparency = 1
     self.titleLabel.Text = self.title
-    self.titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    self.titleLabel.TextSize = 15
+    self.titleLabel.TextColor3 = Color3.fromRGB(100, 200, 255)
+    self.titleLabel.TextSize = 18
     self.titleLabel.Font = Enum.Font.GothamBold
     self.titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    self.titleLabel.TextStrokeTransparency = 0.7
     
-    -- Close Button
+    -- Close Button - Modern
     local closeBtn = Instance.new("TextButton", self.titleBar)
     closeBtn.Name = "CloseBtn"
-    closeBtn.Size = UDim2.new(0, 28, 0, 28)
-    closeBtn.Position = UDim2.new(1, -36, 0.5, -14)
-    closeBtn.BackgroundColor3 = Color3.fromRGB(221, 56, 56)
-    closeBtn.BackgroundTransparency = 0.2
+    closeBtn.Size = UDim2.new(0, 32, 0, 32)
+    closeBtn.Position = UDim2.new(1, -42, 0.5, -16)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(220, 50, 50)
+    closeBtn.BackgroundTransparency = 0.1
     closeBtn.BorderSizePixel = 0
     closeBtn.Text = "✕"
-    closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    closeBtn.TextSize = 16
+    closeBtn.TextColor3 = Color3.fromRGB(255, 100, 100)
+    closeBtn.TextSize = 18
     closeBtn.Font = Enum.Font.GothamBold
     
     local closeBtnCorner = Instance.new("UICorner", closeBtn)
-    closeBtnCorner.CornerRadius = UDim.new(0, 6)
+    closeBtnCorner.CornerRadius = UDim.new(0, 8)
+    
+    closeBtn.MouseEnter:Connect(function()
+        closeBtn.BackgroundColor3 = Color3.fromRGB(240, 50, 50)
+        closeBtn.BackgroundTransparency = 0
+    end)
+    
+    closeBtn.MouseLeave:Connect(function()
+        closeBtn.BackgroundColor3 = Color3.fromRGB(220, 50, 50)
+        closeBtn.BackgroundTransparency = 0.1
+    end)
     
     closeBtn.MouseButton1Click:Connect(function()
         self.window.Visible = false
+        shadowFrame.Visible = false
     end)
     
     -- Content Frame
     self.content = Instance.new("Frame", self.window)
     self.content.Name = "Content"
-    self.content.Size = UDim2.new(1, 0, 1, -42)
-    self.content.Position = UDim2.new(0, 0, 0, 42)
-    self.content.BackgroundColor3 = Color3.fromRGB(25, 25, 29)
+    self.content.Size = UDim2.new(1, 0, 1, -50)
+    self.content.Position = UDim2.new(0, 0, 0, 50)
+    self.content.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
     self.content.BorderSizePixel = 0
     
+    -- Left Sidebar mit Tabs
+    self.sidebar = Instance.new("Frame", self.content)
+    self.sidebar.Name = "Sidebar"
+    self.sidebar.Size = UDim2.new(0, 200, 1, 0)
+    self.sidebar.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
+    self.sidebar.BorderSizePixel = 0
+    
+    local sidebarStroke = Instance.new("UIStroke", self.sidebar)
+    sidebarStroke.Color = Color3.fromRGB(100, 200, 255)
+    sidebarStroke.Thickness = 0.5
+    sidebarStroke.Transparency = 0.7
+    
     -- Tabs Container
-    self.tabsContainer = Instance.new("Frame", self.content)
+    self.tabsContainer = Instance.new("ScrollingFrame", self.sidebar)
     self.tabsContainer.Name = "TabsContainer"
-    self.tabsContainer.Size = UDim2.new(0, 170, 1, 0)
-    self.tabsContainer.BackgroundColor3 = Color3.fromRGB(27, 27, 31)
+    self.tabsContainer.Size = UDim2.new(1, 0, 1, 0)
+    self.tabsContainer.BackgroundTransparency = 1
     self.tabsContainer.BorderSizePixel = 0
+    self.tabsContainer.ScrollBarThickness = 0
+    self.tabsContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
+    self.tabsContainer.AutomaticCanvasSize = Enum.AutomaticSize.Y
     
     local tabsLayout = Instance.new("UIListLayout", self.tabsContainer)
-    tabsLayout.Padding = UDim.new(0, 4)
+    tabsLayout.Padding = UDim.new(0, 8)
     tabsLayout.SortOrder = Enum.SortOrder.LayoutOrder
     
     local tabsPadding = Instance.new("UIPadding", self.tabsContainer)
-    tabsPadding.PaddingTop = UDim.new(0, 10)
+    tabsPadding.PaddingTop = UDim.new(0, 12)
     tabsPadding.PaddingLeft = UDim.new(0, 8)
     tabsPadding.PaddingRight = UDim.new(0, 8)
-    tabsPadding.PaddingBottom = UDim.new(0, 10)
+    tabsPadding.PaddingBottom = UDim.new(0, 12)
     
     -- Content Panels Container
     self.panelsContainer = Instance.new("Frame", self.content)
     self.panelsContainer.Name = "PanelsContainer"
-    self.panelsContainer.Size = UDim2.new(1, -178, 1, 0)
-    self.panelsContainer.Position = UDim2.new(0, 178, 0, 0)
-    self.panelsContainer.BackgroundColor3 = Color3.fromRGB(23, 23, 27)
+    self.panelsContainer.Size = UDim2.new(1, -200, 1, 0)
+    self.panelsContainer.Position = UDim2.new(0, 200, 0, 0)
+    self.panelsContainer.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
     self.panelsContainer.BorderSizePixel = 0
     
-    -- Resize Handle (Bottom-Right)
+    -- Resize Handle
     local resizeHandle = Instance.new("Frame", self.window)
     resizeHandle.Name = "ResizeHandle"
-    resizeHandle.Size = UDim2.new(0, 15, 0, 15)
-    resizeHandle.Position = UDim2.new(1, -15, 1, -15)
-    resizeHandle.BackgroundColor3 = Color3.fromRGB(101, 255, 101)
+    resizeHandle.Size = UDim2.new(0, 16, 0, 16)
+    resizeHandle.Position = UDim2.new(1, -16, 1, -16)
+    resizeHandle.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
     resizeHandle.BorderSizePixel = 0
-    resizeHandle.Transparency = 0.7
+    resizeHandle.Transparency = 0.8
     
     local resizeCorner = Instance.new("UICorner", resizeHandle)
-    resizeCorner.CornerRadius = UDim.new(0, 4)
+    resizeCorner.CornerRadius = UDim.new(0, 3)
     
-    -- Make resize handle visible on hover
     resizeHandle.MouseEnter:Connect(function()
-        resizeHandle.Transparency = 0.3
+        resizeHandle.Transparency = 0.2
     end)
     
     resizeHandle.MouseLeave:Connect(function()
-        resizeHandle.Transparency = 0.7
+        resizeHandle.Transparency = 0.8
     end)
     
     -- Drag & Resize Logic
@@ -148,6 +206,7 @@ function windUI:_createWindow()
         self.isDragging = true
         self.dragStart = UserInputService:GetMouseLocation()
         self.windowPosStart = self.window.Position
+        shadowFrame.Position = self.window.Position + UDim2.new(0, 10, 0, 10)
     end)
     
     UserInputService.InputEnded:Connect(function(input)
@@ -169,6 +228,7 @@ function windUI:_createWindow()
         if self.isDragging then
             local delta = mouse - self.dragStart
             self.window.Position = self.windowPosStart + UDim2.new(0, delta.X, 0, delta.Y)
+            shadowFrame.Position = self.window.Position + UDim2.new(0, 10, 0, 10)
         end
         
         if self.isResizing then
@@ -180,6 +240,7 @@ function windUI:_createWindow()
             newHeight = math.max(self.minSize.Y.Offset, math.min(self.maxSize.Y.Offset, newHeight))
             
             self.window.Size = UDim2.new(0, newWidth, 0, newHeight)
+            shadowFrame.Size = self.window.Size + UDim2.new(0, 20, 0, 20)
         end
     end)
     
@@ -192,66 +253,82 @@ function windUI:CreateTab(tabName, layoutOrder)
     tab.name = tabName
     tab.layoutOrder = layoutOrder or #self.tabs + 1
     
-    -- Tab Button
-    local tabBtn = Instance.new("Frame", self.tabsContainer)
+    -- Tab Button - Modern with hover effect
+    local tabBtn = Instance.new("TextButton", self.tabsContainer)
     tabBtn.Name = tabName .. "Btn"
-    tabBtn.Size = UDim2.new(1, 0, 0, 38)
-    tabBtn.BackgroundColor3 = Color3.fromRGB(33, 33, 39)
+    tabBtn.Size = UDim2.new(1, 0, 0, 44)
+    tabBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
     tabBtn.BorderSizePixel = 0
     tabBtn.LayoutOrder = tab.layoutOrder
+    tabBtn.Text = ""
+    tabBtn.AutoButtonColor = false
     
     local tabCorner = Instance.new("UICorner", tabBtn)
-    tabCorner.CornerRadius = UDim.new(0, 6)
+    tabCorner.CornerRadius = UDim.new(0, 8)
     
     local tabStroke = Instance.new("UIStroke", tabBtn)
-    tabStroke.Color = Color3.fromRGB(51, 51, 57)
-    tabStroke.Thickness = 0.5
+    tabStroke.Color = Color3.fromRGB(100, 200, 255)
+    tabStroke.Thickness = 1
+    tabStroke.Transparency = 0.8
     
-    -- Indicator
+    -- Tab Icon/Text
+    local tabLabel = Instance.new("TextLabel", tabBtn)
+    tabLabel.Name = "Label"
+    tabLabel.Size = UDim2.new(1, -16, 1, 0)
+    tabLabel.Position = UDim2.new(0, 12, 0, 0)
+    tabLabel.BackgroundTransparency = 1
+    tabLabel.Text = tabName
+    tabLabel.TextColor3 = Color3.fromRGB(180, 180, 190)
+    tabLabel.TextSize = 13
+    tabLabel.Font = Enum.Font.GothamBold
+    tabLabel.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Indicator Line (left side)
     tab.indicator = Instance.new("Frame", tabBtn)
     tab.indicator.Name = "Indicator"
-    tab.indicator.Size = UDim2.new(0, 3, 0.6, 0)
-    tab.indicator.Position = UDim2.new(0, 0, 0.2, 0)
-    tab.indicator.BackgroundColor3 = Color3.fromRGB(101, 255, 101)
+    tab.indicator.Size = UDim2.new(0, 4, 0.4, 0)
+    tab.indicator.Position = UDim2.new(0, 0, 0.3, 0)
+    tab.indicator.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
     tab.indicator.BorderSizePixel = 0
     tab.indicator.Visible = false
     
     local indCorner = Instance.new("UICorner", tab.indicator)
     indCorner.CornerRadius = UDim.new(0, 2)
     
-    -- Tab Label
-    local tabLabel = Instance.new("TextLabel", tabBtn)
-    tabLabel.Name = "Label"
-    tabLabel.Size = UDim2.new(1, -12, 1, 0)
-    tabLabel.Position = UDim2.new(0, 12, 0, 0)
-    tabLabel.BackgroundTransparency = 1
-    tabLabel.Text = tabName
-    tabLabel.TextColor3 = Color3.fromRGB(151, 151, 161)
-    tabLabel.TextSize = 13
-    tabLabel.Font = Enum.Font.GothamBold
-    tabLabel.TextXAlignment = Enum.TextXAlignment.Left
+    -- Hover Effects
+    tabBtn.MouseEnter:Connect(function()
+        tabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+        tabLabel.TextColor3 = Color3.fromRGB(220, 220, 230)
+    end)
+    
+    tabBtn.MouseLeave:Connect(function()
+        if not tab.indicator.Visible then
+            tabBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+            tabLabel.TextColor3 = Color3.fromRGB(180, 180, 190)
+        end
+    end)
     
     -- Panel
     local panel = Instance.new("ScrollingFrame", self.panelsContainer)
     panel.Name = tabName .. "Panel"
     panel.Size = UDim2.new(1, 0, 1, 0)
-    panel.BackgroundColor3 = Color3.fromRGB(23, 23, 27)
+    panel.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
     panel.BorderSizePixel = 0
-    panel.ScrollBarThickness = 4
-    panel.ScrollBarImageColor3 = Color3.fromRGB(51, 51, 57)
+    panel.ScrollBarThickness = 6
+    panel.ScrollBarImageColor3 = Color3.fromRGB(100, 200, 255)
     panel.CanvasSize = UDim2.new(0, 0, 0, 0)
     panel.AutomaticCanvasSize = Enum.AutomaticSize.Y
     panel.Visible = false
     
     local panelLayout = Instance.new("UIListLayout", panel)
-    panelLayout.Padding = UDim.new(0, 6)
+    panelLayout.Padding = UDim.new(0, 10)
     panelLayout.SortOrder = Enum.SortOrder.LayoutOrder
     
     local panelPadding = Instance.new("UIPadding", panel)
-    panelPadding.PaddingTop = UDim.new(0, 10)
-    panelPadding.PaddingLeft = UDim.new(0, 10)
-    panelPadding.PaddingRight = UDim.new(0, 10)
-    panelPadding.PaddingBottom = UDim.new(0, 10)
+    panelPadding.PaddingTop = UDim.new(0, 16)
+    panelPadding.PaddingLeft = UDim.new(0, 16)
+    panelPadding.PaddingRight = UDim.new(0, 16)
+    panelPadding.PaddingBottom = UDim.new(0, 16)
     
     -- Tab Click Handler
     tabBtn.MouseButton1Click:Connect(function()
@@ -262,17 +339,19 @@ function windUI:CreateTab(tabName, layoutOrder)
         end
         
         for _, t in pairs(self.tabsContainer:GetChildren()) do
-            if t:IsA("Frame") and t:FindFirstChild("Indicator") then
+            if t:IsA("TextButton") and t:FindFirstChild("Indicator") then
                 t:FindFirstChild("Indicator").Visible = false
                 if t:FindFirstChild("Label") then
-                    t:FindFirstChild("Label").TextColor3 = Color3.fromRGB(151, 151, 161)
+                    t:FindFirstChild("Label").TextColor3 = Color3.fromRGB(180, 180, 190)
                 end
+                t.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
             end
         end
         
         panel.Visible = true
         tab.indicator.Visible = true
-        tabLabel.TextColor3 = Color3.fromRGB(101, 255, 101)
+        tabLabel.TextColor3 = Color3.fromRGB(100, 200, 255)
+        tabBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
     end)
     
     tab.panel = panel
@@ -299,17 +378,19 @@ function windUI:ActivateTab(tabName)
         end
         
         for _, t in pairs(self.tabsContainer:GetChildren()) do
-            if t:IsA("Frame") and t:FindFirstChild("Indicator") then
+            if t:IsA("TextButton") and t:FindFirstChild("Indicator") then
                 t:FindFirstChild("Indicator").Visible = false
                 if t:FindFirstChild("Label") then
-                    t:FindFirstChild("Label").TextColor3 = Color3.fromRGB(151, 151, 161)
+                    t:FindFirstChild("Label").TextColor3 = Color3.fromRGB(180, 180, 190)
                 end
+                t.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
             end
         end
         
         tab.panel.Visible = true
         tab.indicator.Visible = true
-        tab.indicator.Parent:FindFirstChild("Label").TextColor3 = Color3.fromRGB(101, 255, 101)
+        tab.indicator.Parent:FindFirstChild("Label").TextColor3 = Color3.fromRGB(100, 200, 255)
+        tab.indicator.Parent.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
     end
 end
 
@@ -325,70 +406,76 @@ function TabMethods:AddToggle(label, description, default, callback)
     
     local container = Instance.new("Frame", self.panel)
     container.Name = label
-    container.Size = UDim2.new(1, 0, 0, 47)
-    container.BackgroundColor3 = Color3.fromRGB(33, 33, 39)
+    container.Size = UDim2.new(1, 0, 0, 60)
+    container.BackgroundColor3 = Color3.fromRGB(22, 22, 32)
     container.BorderSizePixel = 0
     container.LayoutOrder = self.layoutOrder
     
     local corner = Instance.new("UICorner", container)
-    corner.CornerRadius = UDim.new(0, 6)
+    corner.CornerRadius = UDim.new(0, 8)
     
     local stroke = Instance.new("UIStroke", container)
-    stroke.Color = Color3.fromRGB(51, 51, 57)
+    stroke.Color = Color3.fromRGB(100, 200, 255)
     stroke.Thickness = 0.5
+    stroke.Transparency = 0.6
     
     local labelText = Instance.new("TextLabel", container)
     labelText.Name = "Label"
-    labelText.Size = UDim2.new(1, -70, 0, 18)
-    labelText.Position = UDim2.new(0, 14, 0, 7)
+    labelText.Size = UDim2.new(1, -70, 0, 22)
+    labelText.Position = UDim2.new(0, 16, 0, 8)
     labelText.BackgroundTransparency = 1
     labelText.Text = label
-    labelText.TextColor3 = Color3.fromRGB(231, 231, 236)
+    labelText.TextColor3 = Color3.fromRGB(220, 220, 230)
     labelText.TextSize = 14
     labelText.Font = Enum.Font.GothamBold
     labelText.TextXAlignment = Enum.TextXAlignment.Left
     
     local descText = Instance.new("TextLabel", container)
     descText.Name = "Description"
-    descText.Size = UDim2.new(1, -70, 0, 14)
-    descText.Position = UDim2.new(0, 14, 0, 25)
+    descText.Size = UDim2.new(1, -70, 0, 16)
+    descText.Position = UDim2.new(0, 16, 0, 30)
     descText.BackgroundTransparency = 1
     descText.Text = description or ""
-    descText.TextColor3 = Color3.fromRGB(91, 91, 101)
+    descText.TextColor3 = Color3.fromRGB(130, 130, 145)
     descText.TextSize = 11
     descText.Font = Enum.Font.GothamRegular
     descText.TextXAlignment = Enum.TextXAlignment.Left
     
     local toggleSwitch = Instance.new("Frame", container)
     toggleSwitch.Name = "ToggleSwitch"
-    toggleSwitch.Size = UDim2.new(0, 42, 0, 22)
-    toggleSwitch.Position = UDim2.new(1, -54, 0.5, -11)
-    toggleSwitch.BackgroundColor3 = Color3.fromRGB(49, 49, 49)
+    toggleSwitch.Size = UDim2.new(0, 48, 0, 26)
+    toggleSwitch.Position = UDim2.new(1, -62, 0.5, -13)
+    toggleSwitch.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
     toggleSwitch.BorderSizePixel = 0
     
     local switchCorner = Instance.new("UICorner", toggleSwitch)
-    switchCorner.CornerRadius = UDim.new(0, 11)
+    switchCorner.CornerRadius = UDim.new(0, 13)
+    
+    local switchStroke = Instance.new("UIStroke", toggleSwitch)
+    switchStroke.Color = Color3.fromRGB(100, 200, 255)
+    switchStroke.Thickness = 0.5
+    switchStroke.Transparency = 0.8
     
     local knob = Instance.new("Frame", toggleSwitch)
     knob.Name = "Knob"
-    knob.Size = UDim2.new(0, 18, 0, 18)
-    knob.Position = UDim2.new(0, 2, 0.5, -9)
-    knob.BackgroundColor3 = Color3.fromRGB(201, 201, 201)
+    knob.Size = UDim2.new(0, 20, 0, 20)
+    knob.Position = UDim2.new(0, 3, 0.5, -10)
+    knob.BackgroundColor3 = Color3.fromRGB(220, 220, 230)
     knob.BorderSizePixel = 0
     
     local knobCorner = Instance.new("UICorner", knob)
-    knobCorner.CornerRadius = UDim.new(0, 9)
+    knobCorner.CornerRadius = UDim.new(0, 10)
     
     local toggled = default or false
     
     local function updateToggle(state)
         toggled = state
         if toggled then
-            knob.Position = UDim2.new(0, 22, 0.5, -9)
-            toggleSwitch.BackgroundColor3 = Color3.fromRGB(101, 255, 101)
+            knob.Position = UDim2.new(0, 25, 0.5, -10)
+            toggleSwitch.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
         else
-            knob.Position = UDim2.new(0, 2, 0.5, -9)
-            toggleSwitch.BackgroundColor3 = Color3.fromRGB(49, 49, 49)
+            knob.Position = UDim2.new(0, 3, 0.5, -10)
+            toggleSwitch.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
         end
         if callback then
             callback(toggled)
@@ -414,64 +501,70 @@ function TabMethods:AddSlider(label, description, minVal, maxVal, default, callb
     
     local container = Instance.new("Frame", self.panel)
     container.Name = label
-    container.Size = UDim2.new(1, 0, 0, 60)
-    container.BackgroundColor3 = Color3.fromRGB(33, 33, 39)
+    container.Size = UDim2.new(1, 0, 0, 80)
+    container.BackgroundColor3 = Color3.fromRGB(22, 22, 32)
     container.BorderSizePixel = 0
     container.LayoutOrder = self.layoutOrder
     
     local corner = Instance.new("UICorner", container)
-    corner.CornerRadius = UDim.new(0, 6)
+    corner.CornerRadius = UDim.new(0, 8)
     
     local stroke = Instance.new("UIStroke", container)
-    stroke.Color = Color3.fromRGB(51, 51, 57)
+    stroke.Color = Color3.fromRGB(100, 200, 255)
     stroke.Thickness = 0.5
+    stroke.Transparency = 0.6
     
     local labelText = Instance.new("TextLabel", container)
     labelText.Name = "Label"
-    labelText.Size = UDim2.new(1, -60, 0, 18)
-    labelText.Position = UDim2.new(0, 14, 0, 7)
+    labelText.Size = UDim2.new(1, -70, 0, 22)
+    labelText.Position = UDim2.new(0, 16, 0, 8)
     labelText.BackgroundTransparency = 1
     labelText.Text = label
-    labelText.TextColor3 = Color3.fromRGB(231, 231, 236)
+    labelText.TextColor3 = Color3.fromRGB(220, 220, 230)
     labelText.TextSize = 14
     labelText.Font = Enum.Font.GothamBold
     labelText.TextXAlignment = Enum.TextXAlignment.Left
     
     local valueText = Instance.new("TextLabel", container)
     valueText.Name = "Value"
-    valueText.Size = UDim2.new(0, 50, 0, 18)
-    valueText.Position = UDim2.new(1, -64, 0, 7)
+    valueText.Size = UDim2.new(0, 60, 0, 22)
+    valueText.Position = UDim2.new(1, -76, 0, 8)
     valueText.BackgroundTransparency = 1
-    valueText.Text = tostring(default or minVal)
-    valueText.TextColor3 = Color3.fromRGB(101, 255, 101)
+    valueText.Text = tostring(math.round(default or minVal))
+    valueText.TextColor3 = Color3.fromRGB(100, 200, 255)
     valueText.TextSize = 12
     valueText.Font = Enum.Font.GothamBold
     valueText.TextXAlignment = Enum.TextXAlignment.Right
     
     local descText = Instance.new("TextLabel", container)
     descText.Name = "Description"
-    descText.Size = UDim2.new(1, -28, 0, 14)
-    descText.Position = UDim2.new(0, 14, 0, 25)
+    descText.Size = UDim2.new(1, -32, 0, 16)
+    descText.Position = UDim2.new(0, 16, 0, 30)
     descText.BackgroundTransparency = 1
     descText.Text = description or ""
-    descText.TextColor3 = Color3.fromRGB(91, 91, 101)
+    descText.TextColor3 = Color3.fromRGB(130, 130, 145)
     descText.TextSize = 11
     descText.Font = Enum.Font.GothamRegular
     descText.TextXAlignment = Enum.TextXAlignment.Left
     
     local sliderBg = Instance.new("Frame", container)
     sliderBg.Name = "SliderBg"
-    sliderBg.Size = UDim2.new(1, -28, 0, 4)
-    sliderBg.Position = UDim2.new(0, 14, 0, 43)
-    sliderBg.BackgroundColor3 = Color3.fromRGB(49, 49, 49)
+    sliderBg.Size = UDim2.new(1, -32, 0, 5)
+    sliderBg.Position = UDim2.new(0, 16, 0, 52)
+    sliderBg.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
     sliderBg.BorderSizePixel = 0
     
     local sliderCorner = Instance.new("UICorner", sliderBg)
     sliderCorner.CornerRadius = UDim.new(0, 2)
     
+    local sliderStroke = Instance.new("UIStroke", sliderBg)
+    sliderStroke.Color = Color3.fromRGB(100, 200, 255)
+    sliderStroke.Thickness = 0.5
+    sliderStroke.Transparency = 0.8
+    
     local sliderFill = Instance.new("Frame", sliderBg)
     sliderFill.Name = "Fill"
-    sliderFill.BackgroundColor3 = Color3.fromRGB(101, 255, 101)
+    sliderFill.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
     sliderFill.BorderSizePixel = 0
     
     local fillCorner = Instance.new("UICorner", sliderFill)
@@ -533,10 +626,10 @@ function TabMethods:AddLabel(text)
     
     local label = Instance.new("TextLabel", self.panel)
     label.Name = "Label_" .. text
-    label.Size = UDim2.new(1, 0, 0, 30)
+    label.Size = UDim2.new(1, 0, 0, 40)
     label.BackgroundTransparency = 1
     label.Text = text
-    label.TextColor3 = Color3.fromRGB(91, 91, 101)
+    label.TextColor3 = Color3.fromRGB(130, 130, 145)
     label.TextSize = 13
     label.Font = Enum.Font.GothamRegular
     label.TextXAlignment = Enum.TextXAlignment.Left
@@ -548,86 +641,92 @@ function TabMethods:AddColorPicker(colors, callback)
     
     local container = Instance.new("Frame", self.panel)
     container.Name = "ColorPicker"
-    container.Size = UDim2.new(1, 0, 0, 80)
-    container.BackgroundColor3 = Color3.fromRGB(33, 33, 39)
+    container.Size = UDim2.new(1, 0, 0, 100)
+    container.BackgroundColor3 = Color3.fromRGB(22, 22, 32)
     container.BorderSizePixel = 0
     container.LayoutOrder = self.layoutOrder
     
     local corner = Instance.new("UICorner", container)
-    corner.CornerRadius = UDim.new(0, 6)
+    corner.CornerRadius = UDim.new(0, 8)
     
     local stroke = Instance.new("UIStroke", container)
-    stroke.Color = Color3.fromRGB(51, 51, 57)
+    stroke.Color = Color3.fromRGB(100, 200, 255)
     stroke.Thickness = 0.5
+    stroke.Transparency = 0.6
     
     local label = Instance.new("TextLabel", container)
     label.Name = "Label"
-    label.Size = UDim2.new(1, -20, 0, 18)
-    label.Position = UDim2.new(0, 14, 0, 7)
+    label.Size = UDim2.new(1, -32, 0, 22)
+    label.Position = UDim2.new(0, 16, 0, 8)
     label.BackgroundTransparency = 1
     label.Text = "Skin Color"
-    label.TextColor3 = Color3.fromRGB(231, 231, 236)
+    label.TextColor3 = Color3.fromRGB(220, 220, 230)
     label.TextSize = 14
     label.Font = Enum.Font.GothamBold
     label.TextXAlignment = Enum.TextXAlignment.Left
     
     local desc = Instance.new("TextLabel", container)
     desc.Name = "Description"
-    desc.Size = UDim2.new(1, -20, 0, 14)
-    desc.Position = UDim2.new(0, 14, 0, 25)
+    desc.Size = UDim2.new(1, -32, 0, 16)
+    desc.Position = UDim2.new(0, 16, 0, 30)
     desc.BackgroundTransparency = 1
     desc.Text = "Change your character's skin color"
-    desc.TextColor3 = Color3.fromRGB(91, 91, 101)
+    desc.TextColor3 = Color3.fromRGB(130, 130, 145)
     desc.TextSize = 11
     desc.Font = Enum.Font.GothamRegular
     desc.TextXAlignment = Enum.TextXAlignment.Left
     
     local colorContainer = Instance.new("Frame", container)
     colorContainer.Name = "ColorContainer"
-    colorContainer.Size = UDim2.new(1, -28, 0, 28)
-    colorContainer.Position = UDim2.new(0, 14, 0, 44)
+    colorContainer.Size = UDim2.new(1, -32, 0, 36)
+    colorContainer.Position = UDim2.new(0, 16, 0, 52)
     colorContainer.BackgroundTransparency = 1
     
     local colorLayout = Instance.new("UIListLayout", colorContainer)
-    colorLayout.Padding = UDim.new(0, 6)
+    colorLayout.Padding = UDim.new(0, 8)
     colorLayout.SortOrder = Enum.SortOrder.LayoutOrder
     colorLayout.FillDirection = Enum.FillDirection.Horizontal
     
-    local selectedColor = colors[1] or Color3.fromRGB(255, 255, 255)
+    local selectedColor = colors[1].color or colors[1]
     
     for idx, colorData in ipairs(colors) do
         local colorBtn = Instance.new("TextButton", colorContainer)
         colorBtn.Name = "Color_" .. idx
-        colorBtn.Size = UDim2.new(0, 28, 0, 28)
+        colorBtn.Size = UDim2.new(0, 32, 0, 32)
         colorBtn.BackgroundColor3 = colorData.color or colorData
         colorBtn.BorderSizePixel = 0
         colorBtn.Text = ""
         colorBtn.LayoutOrder = idx
+        colorBtn.AutoButtonColor = false
         
         local btnCorner = Instance.new("UICorner", colorBtn)
         btnCorner.CornerRadius = UDim.new(0, 6)
         
         local btnStroke = Instance.new("UIStroke", colorBtn)
-        btnStroke.Color = Color3.fromRGB(61, 61, 71)
+        btnStroke.Color = Color3.fromRGB(100, 200, 255)
         btnStroke.Thickness = 1
+        btnStroke.Transparency = 0.7
         
         local selectionRing = Instance.new("UIStroke", colorBtn)
         selectionRing.Name = "SelectionRing"
-        selectionRing.Thickness = 2
-        selectionRing.Color = Color3.fromRGB(101, 255, 101)
+        selectionRing.Thickness = 2.5
+        selectionRing.Color = Color3.fromRGB(100, 200, 255)
         selectionRing.Transparency = 1
         
         if idx == 1 then
             selectionRing.Transparency = 0
+            btnStroke.Transparency = 0.2
         end
         
         colorBtn.MouseButton1Click:Connect(function()
             for _, btn in pairs(colorContainer:GetChildren()) do
                 if btn:IsA("TextButton") and btn:FindFirstChild("SelectionRing") then
                     btn:FindFirstChild("SelectionRing").Transparency = 1
+                    btn:FindFirstChild("UIStroke").Transparency = 0.7
                 end
             end
             selectionRing.Transparency = 0
+            btnStroke.Transparency = 0.2
             selectedColor = colorData.color or colorData
             if callback then
                 callback(selectedColor)
@@ -641,7 +740,6 @@ function TabMethods:AddColorPicker(colors, callback)
     }
 end
 
--- Tab methods assignment
 for methodName, method in pairs(TabMethods) do
     windUI[methodName] = method
 end
@@ -658,38 +756,8 @@ local player = Players.LocalPlayer
 local camera = workspace.CurrentCamera
 
 -- Create windUI
-local ui = windUI.new("REXAS CHEATS", UDim2.new(0, 550, 0, 400), UDim2.new(0.2, 0, 0.2, 0))
+local ui = windUI.new("REXAS CHEATS", UDim2.new(0, 650, 0, 500), UDim2.new(0.15, 0, 0.15, 0))
 local screenGui = ui:GetScreenGui()
-
--- Copy Attributes from old system (if exists)
-for _, oldGui in pairs(player:WaitForChild("PlayerGui"):GetChildren()) do
-    if oldGui.Name == "VIP" and oldGui:FindFirstChild("ScreenGui") == nil then
-        for key, val in pairs({
-            FovEnabled = false,
-            EspShowUsername = true,
-            FullBrightEnabled = false,
-            AimbotEnabled = false,
-            FovSize = 150,
-            NightScreenEnabled = false,
-            EspShowHealth = true,
-            EspEnabled = false,
-            NoclipEnabled = false,
-            SkeletonEnabled = false,
-            AimbotActive = false,
-            AimbotStrength = 0.5,
-            AimbotKeybind = "K",
-            FlingEnabled = false,
-            SkinColor = nil
-        }) do
-            if oldGui:GetAttribute(key) ~= nil then
-                screenGui:SetAttribute(key, oldGui:GetAttribute(key))
-            else
-                screenGui:SetAttribute(key, val)
-            end
-        end
-        oldGui:Destroy()
-    end
-end
 
 -- Initialize all attributes
 screenGui:SetAttribute("FovEnabled", false)
@@ -718,20 +786,6 @@ local vendingTab = ui:CreateTab("🏪 Vending", 5)
 -- ============ AIMBOT TAB ============
 aimbotTab:AddToggle("Aimbot", "Targets the nearest humanoid", false, function(state)
     screenGui:SetAttribute("AimbotEnabled", state)
-end)
-
-local keybindDisplay = "K"
-aimbotTab:AddToggle("Keybind", "Press to set a custom toggle key", false, function(state)
-    if state then
-        local connection
-        connection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
-            if not gameProcessed and input.UserInputType == Enum.UserInputType.Keyboard then
-                keybindDisplay = tostring(input.KeyCode):match("Enum%.KeyCode%.(.+)") or "K"
-                screenGui:SetAttribute("AimbotKeybind", keybindDisplay)
-                connection:Disconnect()
-            end
-        end)
-    end
 end)
 
 aimbotTab:AddSlider("Strength", "Aimbot smoothness (0.1 - 1.0)", 0.1, 1, 0.5, function(val)
@@ -816,7 +870,7 @@ fovCorner.CornerRadius = UDim.new(0, 150)
 
 local fovStroke = Instance.new("UIStroke", fovCircle)
 fovStroke.Thickness = 2
-fovStroke.Color = Color3.fromRGB(101, 255, 101)
+fovStroke.Color = Color3.fromRGB(100, 200, 255)
 fovStroke.Transparency = 0.3
 
 screenGui:GetAttributeChangedSignal("FovEnabled"):Connect(function()
@@ -1189,7 +1243,7 @@ local function createSkeletonForCharacter(char)
             local line = Instance.new("Part", skeleton)
             line.Shape = Enum.PartType.Cylinder
             line.CanCollide = false
-            line.Color = Color3.fromRGB(0, 255, 0)
+            line.Color = Color3.fromRGB(100, 200, 255)
             line.Material = Enum.Material.Neon
             line.TopSurface = Enum.SurfaceType.Smooth
             line.BottomSurface = Enum.SurfaceType.Smooth
